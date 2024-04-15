@@ -110,32 +110,30 @@ contract InvestmentStrategy {
         _supplyUSDC(usdcReceived);
     }
 
+    /**
+     * @dev Supplies USDC tokens into the Moonwell protocol.
+     * @param _usdcToSupply Amount of USDC tokens to supply.
+     */
     function _supplyUSDC(uint256 _usdcToSupply) internal {
         USDC.approve(address(mUSDC), _usdcToSupply);
         uint256 error = mUSDC.mint(_usdcToSupply);
         require(error == 0, "InvestmentStrategy: mErc20.mint Error");
     }
 
+    /**
+     * @dev Swaps DAI to USDC using Uniswap V3.
+     * @param _amount Amount of DAI tokens to swap.
+     * @return usdcReceived Amount of USDC received after the swap.
+     */
     function _swapDAIToUSDC(
         uint256 _amount
     ) public returns (uint256 usdcReceived) {
         TransferHelper.safeApprove(address(DAI), address(swapRouter), _amount);
-        // ISwapRouter.ExactInputSingleParams memory exactInputParams = ISwapRouter
-        // .ExactInputSingleParams({
-        //     tokenIn: address(DAI),
-        //     tokenOut: address(USDC),
-        //     fee: 10000, // 0.1% fee (10000 out of 1e6)
-        //     recipient: address(this),
-        //     deadline: block.timestamp + 100, // Deadline for the swap (100 blocks from now)
-        //     amountIn: _amount, // Amount of DAI tokens to swap
-        //     amountOutMinimum: 0, // Minimum amount of USDC tokens to receive (set to 0 for no minimum)
-        //     sqrtPriceLimitX96: 0 // No price limit
-        // });
         ISwapRouter.ExactInputSingleParams memory exactInputParams = ISwapRouter
             .ExactInputSingleParams({
                 tokenIn: address(DAI),
                 tokenOut: address(USDC),
-                fee: 3000,
+                fee: 10000,
                 recipient: address(this),
                 deadline: block.timestamp,
                 amountIn: _amount,
