@@ -1,0 +1,7 @@
+node_modules
+.env
+package-lock.json
+contracts/hardhat-dependency-compiler
+# Hardhat files
+cache
+artifacts
